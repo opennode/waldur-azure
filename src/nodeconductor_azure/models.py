@@ -54,5 +54,9 @@ class VirtualMachine(structure_models.VirtualMachineMixin, structure_models.Reso
     service_project_link = models.ForeignKey(
         AzureServiceProjectLink, related_name='virtualmachines', on_delete=models.PROTECT)
 
+    @classmethod
+    def get_url_name(cls):
+        return 'azure-virtualmachine'
+
     def get_access_url_name(self):
         return 'azure-virtualmachine-rdp'
