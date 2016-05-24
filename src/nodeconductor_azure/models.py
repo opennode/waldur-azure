@@ -17,6 +17,10 @@ class AzureService(structure_models.Service):
     projects = models.ManyToManyField(
         structure_models.Project, related_name='azure_services', through='AzureServiceProjectLink')
 
+    @classmethod
+    def get_url_name(cls):
+        return 'azure'
+
 
 class AzureServiceProjectLink(structure_models.ServiceProjectLink):
     service = models.ForeignKey(AzureService)
@@ -27,9 +31,15 @@ class AzureServiceProjectLink(structure_models.ServiceProjectLink):
         return super(AzureServiceProjectLink, self).get_backend(
             cloud_service_name=self.cloud_service_name)
 
+    @classmethod
+    def get_url_name(cls):
+        return 'azure-spl'
+
 
 class Image(structure_models.GeneralServiceProperty):
-    pass
+    @classmethod
+    def get_url_name(cls):
+        return 'azure-image'
 
 
 class Size(object):
@@ -43,6 +53,10 @@ class Size(object):
 class VirtualMachine(structure_models.VirtualMachineMixin, structure_models.Resource):
     service_project_link = models.ForeignKey(
         AzureServiceProjectLink, related_name='virtualmachines', on_delete=models.PROTECT)
+
+    @classmethod
+    def get_url_name(cls):
+        return 'azure-virtualmachine'
 
     def get_access_url_name(self):
         return 'azure-virtualmachine-rdp'
