@@ -8,7 +8,7 @@ dev_requires = [
 ]
 
 install_requires = [
-    'nodeconductor>=0.96.0',
+    'nodeconductor>=0.101.2',
     'apache-libcloud>=0.20.0',
 ]
 
