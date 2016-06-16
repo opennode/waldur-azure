@@ -7,8 +7,9 @@ License: Copyright 2016 OpenNode LLC.  All rights reserved.
 Url: http://nodeconductor.com
 Source0: %{name}-%{version}.tar.gz
 
-Requires: nodeconductor >= 0.96.0
+Requires: nodeconductor >= 0.101.3
 Requires: python-libcloud >= 0.20.1
+Requires: python-cryptography
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
