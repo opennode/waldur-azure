@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from nodeconductor.cost_tracking.models import PayableMixin
 from nodeconductor.structure import models as structure_models
 
 
@@ -50,7 +51,7 @@ class Size(object):
         return 'azure-size'
 
 
-class VirtualMachine(structure_models.VirtualMachineMixin, structure_models.Resource):
+class VirtualMachine(structure_models.VirtualMachineMixin, structure_models.Resource, PayableMixin):
     service_project_link = models.ForeignKey(
         AzureServiceProjectLink, related_name='virtualmachines', on_delete=models.PROTECT)
 

@@ -8,14 +8,14 @@ dev_requires = [
 ]
 
 install_requires = [
-    'nodeconductor>=0.101.3',
+    'nodeconductor>0.102.2',
     'apache-libcloud>=0.20.0',
     'cryptography',
 ]
 
 setup(
     name='nodeconductor-azure',
-    version='0.1.0',
+    version='0.2.0',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
     url='http://nodeconductor.com',
