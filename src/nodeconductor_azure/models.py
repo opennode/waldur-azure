@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 
 from nodeconductor.cost_tracking.models import PayableMixin
+from nodeconductor.quotas.fields import CounterQuotaField
+from nodeconductor.quotas.models import QuotaModelMixin
 from nodeconductor.structure import models as structure_models
 
 
@@ -21,6 +23,12 @@ class AzureService(structure_models.Service):
     @classmethod
     def get_url_name(cls):
         return 'azure'
+
+    class Quotas(QuotaModelMixin.Quotas):
+        vm_count = CounterQuotaField(
+            target_models=lambda: [VirtualMachine],
+            path_to_scope='service_project_link.service'
+        )
 
 
 class AzureServiceProjectLink(structure_models.ServiceProjectLink):
