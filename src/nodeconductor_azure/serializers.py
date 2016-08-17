@@ -13,7 +13,8 @@ from . import models
 from .backend import AzureBackendError, SizeQueryset
 
 
-class ServiceSerializer(structure_serializers.BaseServiceSerializer):
+class ServiceSerializer(core_serializers.ExtraFieldOptionsMixin,
+                        structure_serializers.BaseServiceSerializer):
 
     SERVICE_ACCOUNT_FIELDS = {
         'username': 'In the format of GUID',
@@ -34,20 +35,26 @@ class ServiceSerializer(structure_serializers.BaseServiceSerializer):
     class Meta(structure_serializers.BaseServiceSerializer.Meta):
         model = models.AzureService
         view_name = 'azure-detail'
-
-    def get_fields(self):
-        fields = super(ServiceSerializer, self).get_fields()
-        fields['username'].label = 'Subscription ID'
-        fields['username'].required = True
-
-        fields['certificate'].label = 'Private certificate file'
-        fields['certificate'].required = True
-        fields['certificate'].write_only = True
-
-        fields['location'].help_text = 'Azure region where to provision resources (default: "Central US")'
-        fields['cloud_service_name'].help_text = 'If defined all connected SPLs will operate in the defined cloud service group'
-        fields['images_regex'].help_text = 'Regular expression to limit images list'
-        return fields
+        extra_field_options = {
+            'username': {
+                'label': 'Subscription ID',
+                'required': True
+            },
+            'certificate': {
+                'label': 'Private certificate file',
+                'required': True,
+                'write_only': True
+            },
+            'location': {
+                'help_text': 'Azure region where to provision resources (default: "Central US")'
+            },
+            'cloud_service_name': {
+                'help_text': 'If defined all connected SPLs will operate in the defined cloud service group'
+            },
+            'images_regex': {
+                'help_text': 'Regular expression to limit images list'
+            }
+        }
 
     def validate_certificate(self, value):
         if value:
