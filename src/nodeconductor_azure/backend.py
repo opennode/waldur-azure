@@ -14,9 +14,8 @@ from libcloud.compute.types import NodeState
 from libcloud.compute.base import NodeAuthPassword
 from libcloud.compute.drivers import azure
 
-from nodeconductor.core.tasks import send_task
-from nodeconductor.core.utils import hours_in_month
-from nodeconductor.structure import ServiceBackend, ServiceBackendError, ServiceBackendNotImplemented
+from nodeconductor.structure import ServiceBackend, ServiceBackendError, ServiceBackendNotImplemented, \
+    log_backend_action
 
 from . import models
 from .driver import AzureNodeDriver
@@ -181,43 +180,6 @@ class AzureBaseBackend(ServiceBackend):
         # TODO: this should remove storage and cloud service
         raise ServiceBackendNotImplemented
 
-    def provision(self, vm, region=None, image=None, size=None, username=None, password=None):
-        vm.ram = size.ram
-        vm.disk = size.disk
-        vm.cores = size.cores
-        vm.save()
-
-        send_task('azure', 'provision')(
-            vm.uuid.hex,
-            backend_image_id=image.backend_id,
-            backend_size_id=size.pk,
-            username=username,
-            password=password)
-
-    def destroy(self, vm, force=False):
-        if force:
-            vm.delete()
-            return
-
-        vm.schedule_deletion()
-        vm.save()
-        send_task('azure', 'destroy')(vm.uuid.hex)
-
-    def start(self, vm):
-        vm.schedule_starting()
-        vm.save()
-        send_task('azure', 'start')(vm.uuid.hex)
-
-    def stop(self, vm):
-        vm.schedule_stopping()
-        vm.save()
-        send_task('azure', 'stop')(vm.uuid.hex)
-
-    def restart(self, vm):
-        vm.schedule_restarting()
-        vm.save()
-        send_task('azure', 'restart')(vm.uuid.hex)
-
 
 class AzureBackend(AzureBaseBackend):
     """ NodeConductor interface to Azure API.
@@ -241,10 +203,6 @@ class AzureBackend(AzureBaseBackend):
             return False
         else:
             return True
-
-    def get_monthly_cost_estimate(self, vm):
-        # calculate a price for current month based on hourly rate
-        return float(self.get_vm(vm.backend_id).size.price) * hours_in_month()
 
     def pull_service_properties(self):
         self.pull_images()
@@ -326,12 +284,14 @@ class AzureBackend(AzureBaseBackend):
             logger.debug(
                 'Skipped azure storage creation for SPL %s - such cloud already exists', service_project_link.pk)
 
+    @log_backend_action()
     def reboot_vm(self, vm):
         self.manager.reboot_node(
             self.get_vm(vm.backend_id),
             ex_cloud_service_name=self.cloud_service_name,
             ex_deployment_slot=self.deployment)
 
+    @log_backend_action()
     def stop_vm(self, vm):
         deployment_name = self.manager._get_deployment(
             service_name=self.cloud_service_name,
@@ -351,6 +311,7 @@ class AzureBackend(AzureBaseBackend):
         except Exception as e:
             six.reraise(AzureBackendError, e)
 
+    @log_backend_action()
     def start_vm(self, vm):
         deployment_name = self.manager._get_deployment(
             service_name=self.cloud_service_name,
@@ -370,12 +331,23 @@ class AzureBackend(AzureBaseBackend):
         except Exception as e:
             six.reraise(AzureBackendError, e)
 
+    @log_backend_action()
     def destroy_vm(self, vm):
         self.manager.destroy_node(
             self.get_vm(vm.backend_id),
             ex_cloud_service_name=self.cloud_service_name,
             ex_deployment_slot=self.deployment)
 
+    @log_backend_action('check if virtual machine deleted')
+    def is_vm_deleted(self, vm):
+        try:
+            self.get_vm(vm.backend_id)
+        except AzureBackendError:
+            return True
+        else:
+            return False
+
+    @log_backend_action()
     def provision_vm(self, vm, backend_image_id=None, backend_size_id=None,
                      username=None, password=None):
         try:
@@ -394,8 +366,14 @@ class AzureBackend(AzureBaseBackend):
             six.reraise(AzureBackendError, e)
 
         vm.backend_id = backend_vm.id
-        vm.save(update_fields=['backend_id'])
+        vm.runtime_state = backend_vm.state
+        vm.save(update_fields=['backend_id', 'runtime_state'])
         return backend_vm
+
+    def pull_virtual_machine_runtime_state(self, vm):
+        backend_vm = self.get_vm(vm.backend_id)
+        vm.runtime_state = backend_vm.state
+        vm.save(update_fields=['runtime_state'])
 
     def get_vm(self, vm_id):
         try:
