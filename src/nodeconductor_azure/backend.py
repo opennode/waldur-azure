@@ -368,7 +368,6 @@ class AzureBackend(AzureBaseBackend):
         vm.backend_id = backend_vm.id
         vm.runtime_state = backend_vm.state
         vm.save(update_fields=['backend_id', 'runtime_state'])
-        return backend_vm
 
     def pull_virtual_machine_runtime_state(self, vm):
         backend_vm = self.get_vm(vm.backend_id)

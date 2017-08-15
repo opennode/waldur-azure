@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 class AzureConfig(AppConfig):
     name = 'nodeconductor_azure'
-    verbose_name = 'NodeConductor Azure'
+    verbose_name = 'Waldur Azure'
     service_name = 'Azure'
     is_public_service = True
 

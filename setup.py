@@ -14,7 +14,7 @@ install_requires = [
 
 setup(
     name='nodeconductor-azure',
-    version='0.3.0',
+    version='0.2.0',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
     url='http://waldur.com',
@@ -22,7 +22,7 @@ setup(
     long_description=open('README.rst').read(),
     license='MIT',
     package_dir={'': 'src'},
-    packages=find_packages('src', exclude=['*.tests', '*.tests.*', 'tests.*', 'tests']),
+    packages=find_packages('src'),
     install_requires=install_requires,
     zip_safe=False,
     extras_require={

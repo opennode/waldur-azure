@@ -7,8 +7,8 @@ License: MIT
 Url: http://nodeconductor.com
 Source0: %{name}-%{version}.tar.gz
 
-Requires: nodeconductor > 0.102.2
-Requires: python-libcloud >= 0.20.1
+Requires: nodeconductor > 0.139.0
+Requires: python-libcloud >= 1.1.0
 Requires: python-cryptography
 
 BuildArch: noarch
