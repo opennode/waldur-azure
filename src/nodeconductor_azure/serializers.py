@@ -1,8 +1,9 @@
 import re
 
-from django.utils import six, timezone
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
+from django.db import transaction
+from django.utils import six, timezone
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
@@ -129,7 +130,7 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
         write_only=True)
 
     external_ips = serializers.ListField(
-        child=core_serializers.IPAddressField(),
+        child=serializers.IPAddressField(),
         read_only=True,
     )
 
@@ -169,6 +170,16 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
                 'username': "Invalid Windows administrator username."})
 
         return attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        image = validated_data['image']
+        validated_data['image_name'] = image.name
+        size = validated_data['size']
+        validated_data['cores'] = size.cores
+        validated_data['ram'] = size.ram
+        validated_data['disk'] = size.disk
+        return super(VirtualMachineSerializer, self).create(validated_data)
 
 
 class VirtualMachineImportSerializer(structure_serializers.BaseResourceImportSerializer):

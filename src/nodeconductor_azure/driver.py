@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from libcloud.utils.py3 import httplib
 
 try:
@@ -78,3 +80,13 @@ class AzureNodeDriver(_AzureNodeDriver):
             values = (response.error, error_msg, response.status)
             message = 'Message: %s, Body: %s, Status code: %s' % (values)
             raise LibcloudError(message, driver=self)
+
+    def _parse_response_body_from_xml_text(self, response, return_type):
+        """
+        parse the xml and fill all the data into a class of return_type
+        """
+        # required to support libcloud v[2.0, 2.1]
+        if isinstance(response.body, unicode):
+            response.body = response.body.encode('utf-8')
+
+        return super(AzureNodeDriver, self)._parse_response_body_from_xml_text(response, return_type)
