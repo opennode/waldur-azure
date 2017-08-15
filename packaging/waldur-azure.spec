@@ -1,15 +1,18 @@
-Name: nodeconductor-azure
-Summary: NodeConductor plugin for managing MS Azure resources.
+Name: waldur-azure
+Summary: Waldur plugin for managing MS Azure resources.
 Group: Development/Libraries
 Version: 0.2.0
 Release: 1.el7
 License: MIT
-Url: http://nodeconductor.com
+Url: https://waldur.com
 Source0: %{name}-%{version}.tar.gz
 
-Requires: nodeconductor > 0.139.0
+Requires: waldur-core > 0.139.0
 Requires: python-libcloud >= 1.1.0
+Requires: python-libcloud < 2.2.0
 Requires: python-cryptography
+
+Obsoletes: nodeconductor-azure
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot

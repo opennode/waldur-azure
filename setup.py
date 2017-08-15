@@ -8,7 +8,7 @@ dev_requires = [
 
 install_requires = [
     'nodeconductor>0.139.0',
-    'apache-libcloud>=1.1.0',
+    'apache-libcloud>=1.1.0,<2.2.0',
     'cryptography',
 ]
 
@@ -17,7 +17,7 @@ setup(
     version='0.2.0',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
-    url='http://waldur.com',
+    url='https://waldur.com',
     description='Waldur plugin for managing MS Azure resources.',
     long_description=open('README.rst').read(),
     license='MIT',
