@@ -367,12 +367,25 @@ class AzureBackend(AzureBaseBackend):
 
         vm.backend_id = backend_vm.id
         vm.runtime_state = backend_vm.state
-        vm.save(update_fields=['backend_id', 'runtime_state'])
+        vm.save(update_fields=['backend_id', 'runtime_state', 'remote_desktop_port'])
 
     def pull_virtual_machine_runtime_state(self, vm):
         backend_vm = self.get_vm(vm.backend_id)
         vm.runtime_state = backend_vm.state
         vm.save(update_fields=['runtime_state'])
+
+    def pull_vm_info(self, vm):
+        """
+        VM network info os available only after instance has been initiated and started.
+        :param vm: waldur virtual machine instance to update IPs
+        """
+        backend_vm = self.get_vm(vm.backend_id)
+        vm.private_ips = backend_vm.private_ips
+        vm.public_ips = backend_vm.public_ips
+        rdp_port = backend_vm.extra.get('remote_desktop_port')
+        if rdp_port:
+            vm.remote_desktop_port = int(rdp_port)
+        vm.save(update_fields=['private_ips', 'public_ips', 'remote_desktop_port'])
 
     def get_vm(self, vm_id):
         try:

@@ -15,6 +15,7 @@ class AzureServiceSettingsFactory(structure_factories.ServiceSettingsFactory):
         model = structure_models.ServiceSettings
 
     type = 'Azure'
+    customer = factory.SubFactory(structure_factories.CustomerFactory)
 
 
 class AzureServiceFactory(factory.DjangoModelFactory):

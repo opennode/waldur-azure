@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
 
+from django.core.validators import MaxValueValidator
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
+from nodeconductor.core.fields import JSONField
 from nodeconductor.quotas.fields import CounterQuotaField
 from nodeconductor.quotas.models import QuotaModelMixin
 from nodeconductor.structure import models as structure_models
@@ -61,6 +64,9 @@ class Size(object):
 class VirtualMachine(structure_models.VirtualMachine):
     service_project_link = models.ForeignKey(
         AzureServiceProjectLink, related_name='virtualmachines', on_delete=models.PROTECT)
+    public_ips = JSONField(default=[], help_text=_('List of public IP addresses'), blank=True)
+    private_ips = JSONField(default=[], help_text=_('List of private IP addresses'), blank=True)
+    remote_desktop_port = models.IntegerField(validators=[MaxValueValidator(65535)], null=True)
 
     @classmethod
     def get_url_name(cls):
@@ -68,3 +74,15 @@ class VirtualMachine(structure_models.VirtualMachine):
 
     def get_access_url_name(self):
         return 'azure-virtualmachine-rdp'
+
+    @property
+    def external_ips(self):
+        return self.public_ips
+
+    @property
+    def internal_ips(self):
+        return self.private_ips
+
+    @classmethod
+    def get_backend_fields(cls):
+        return super(VirtualMachine, cls).get_backend_fields() + ('public_ips', 'private_ips')

@@ -77,7 +77,11 @@ class VirtualMachineCreateExecutor(core_executors.CreateExecutor):
                 backend_pull_method='pull_virtual_machine_runtime_state',
                 success_state='running',
                 erred_state='error',
-            ).set(countdown=30)
+            ).set(countdown=30),
+            core_tasks.BackendMethodTask().si(
+                serialized_instance,
+                backend_method='pull_vm_info',
+            ),
         )
 
 

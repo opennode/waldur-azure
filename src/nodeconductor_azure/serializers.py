@@ -50,7 +50,8 @@ class ServiceSerializer(core_serializers.ExtraFieldOptionsMixin,
                 'help_text': 'Azure region where to provision resources (default: "Central US")'
             },
             'cloud_service_name': {
-                'help_text': 'If defined all connected SPLs will operate in the defined cloud service group'
+                'help_text': 'Cloud service group to assign all connected SPLs to',
+                'required': True,
             },
             'images_regex': {
                 'help_text': 'Regular expression to limit images list'
@@ -144,10 +145,15 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
         model = models.VirtualMachine
         view_name = 'azure-virtualmachine-detail'
         fields = structure_serializers.BaseResourceSerializer.Meta.fields + (
-            'image', 'size', 'username', 'password', 'user_data', 'rdp', 'external_ips'
+            'image', 'size', 'username', 'password', 'user_data', 'rdp', 'external_ips', 'internal_ips',
+            'runtime_state', 'start_time', 'cores', 'ram', 'disk', 'image_name', 'remote_desktop_port'
         )
         protected_fields = structure_serializers.BaseResourceSerializer.Meta.protected_fields + (
             'image', 'size', 'username', 'password', 'user_data'
+        )
+        read_only_fields = structure_serializers.BaseResourceSerializer.Meta.read_only_fields + (
+            'external_ips', 'internal_ips', 'runtime_state', 'start_time', 'cores', 'ram', 'disk',
+            'image_name', 'remote_desktop_port'
         )
 
     def validate(self, attrs):
