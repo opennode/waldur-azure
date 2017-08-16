@@ -6,7 +6,7 @@ from rest_framework import decorators, exceptions, viewsets, response, status, s
 from nodeconductor.core import validators as core_validators
 from nodeconductor.structure import ServiceBackendError, views as structure_views
 
-from . import models, serializers, executors
+from . import models, serializers, executors, filters
 from .backend import SizeQueryset
 
 
@@ -24,6 +24,7 @@ class AzureServiceProjectLinkViewSet(structure_views.BaseServiceProjectLinkViewS
 class ImageViewSet(structure_views.BaseServicePropertyViewSet):
     queryset = models.Image.objects.all()
     serializer_class = serializers.ImageSerializer
+    filter_class = filters.ImageFilter
     lookup_field = 'uuid'
 
     def get_queryset(self):
