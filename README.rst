@@ -1,5 +1,4 @@
-NodeConductor Azure plugin
-==========================
+Waldur Azure plugin
+===================
 
-NodeConductor plugin for managing MS Azure resources.
-
+Waldur plugin for managing MS Azure resources.
