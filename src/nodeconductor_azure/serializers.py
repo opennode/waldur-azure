@@ -4,6 +4,7 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from django.db import transaction
 from django.utils import six, timezone
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
@@ -18,8 +19,8 @@ class ServiceSerializer(core_serializers.ExtraFieldOptionsMixin,
                         structure_serializers.BaseServiceSerializer):
 
     SERVICE_ACCOUNT_FIELDS = {
-        'username': 'In the format of GUID',
-        'certificate': 'X509 certificate in .PEM format',
+        'username': _('In the format of GUID'),
+        'certificate': _('X509 certificate in .PEM format'),
     }
     SERVICE_ACCOUNT_EXTRA_FIELDS = {
         'location': '',
@@ -47,14 +48,14 @@ class ServiceSerializer(core_serializers.ExtraFieldOptionsMixin,
                 'write_only': True
             },
             'location': {
-                'help_text': 'Azure region where to provision resources (default: "Central US")'
+                'help_text': _('Azure region where to provision resources (default: "Central US")')
             },
             'cloud_service_name': {
-                'help_text': 'Cloud service group to assign all connected SPLs to',
+                'help_text': _('Cloud service group to assign all connected SPLs to'),
                 'required': True,
             },
             'images_regex': {
-                'help_text': 'Regular expression to limit images list'
+                'help_text': _('Regular expression to limit images list')
             }
         }
 
@@ -63,7 +64,7 @@ class ServiceSerializer(core_serializers.ExtraFieldOptionsMixin,
             try:
                 x509.load_pem_x509_certificate(value.read(), default_backend())
             except ValueError:
-                raise serializers.ValidationError("Valid X509 certificate in .PEM format is expected")
+                raise serializers.ValidationError(_('Valid X509 certificate in .PEM format is expected'))
 
         return value
 
@@ -147,9 +148,8 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
         read_only=True,
     )
 
-    username = serializers.CharField(write_only=True, required=True)
-    # XXX: it's rather insecure
-    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    user_username = serializers.CharField(required=True)
+    user_password = serializers.CharField(required=True, style={'input_type': 'password'})
 
     rdp = serializers.HyperlinkedIdentityField(view_name='azure-virtualmachine-rdp', lookup_field='uuid')
 
@@ -157,11 +157,11 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
         model = models.VirtualMachine
         view_name = 'azure-virtualmachine-detail'
         fields = structure_serializers.BaseResourceSerializer.Meta.fields + (
-            'image', 'size', 'username', 'password', 'user_data', 'rdp', 'external_ips', 'internal_ips',
+            'image', 'size', 'user_username', 'user_password', 'user_data', 'rdp', 'external_ips', 'internal_ips',
             'runtime_state', 'start_time', 'cores', 'ram', 'disk', 'image_name', 'endpoints',
         )
         protected_fields = structure_serializers.BaseResourceSerializer.Meta.protected_fields + (
-            'image', 'size', 'username', 'password', 'user_data'
+            'image', 'size', 'user_username', 'user_password', 'user_data'
         )
         read_only_fields = structure_serializers.BaseResourceSerializer.Meta.read_only_fields + (
             'external_ips', 'internal_ips', 'runtime_state', 'start_time', 'cores', 'ram', 'disk',
@@ -171,21 +171,21 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
     def validate(self, attrs):
         if not re.match(r'[a-zA-Z][a-zA-Z0-9-]{0,13}[a-zA-Z0-9]$', attrs['name']):
             raise serializers.ValidationError(
-                {'name': "The name can contain only letters, numbers, and hyphens. "
-                         "The name must be shorter than 15 characters and start with "
-                         "a letter and must end with a letter or a number."})
+                {'name': _("The name can contain only letters, numbers, and hyphens. "
+                           "The name must be shorter than 15 characters and start with "
+                           "a letter and must end with a letter or a number.")})
 
         # passwords must contain characters from at least three of the following four categories:
         groups = (r'[a-z]', r'[A-Z]', r'[0-9]', r'[^a-zA-Z\d\s:]')
-        if not 6 <= len(attrs['password']) <= 72 or sum(bool(re.search(g, attrs['password'])) for g in groups) < 3:
+        password = attrs['user_password']
+        if not 6 <= len(password) <= 72 or sum(bool(re.search(g, password)) for g in groups) < 3:
             raise serializers.ValidationError({
-                'password': "The supplied password must be 6-72 characters long "
-                "and contain 3 of the following: a lowercase character, "
-                "an uppercase character, a number, a special character."})
+                'user_password': _("The supplied password must be 6-72 characters long "
+                                   "and contain 3 of the following: a lowercase character, "
+                                   "an uppercase character, a number, a special character.")})
 
-        if re.match(r'Administrator|Admin', attrs['username'], re.I):
-            raise serializers.ValidationError({
-                'username': "Invalid Windows administrator username."})
+        if re.match(r'Administrator|Admin', attrs['user_username'], re.I):
+            raise serializers.ValidationError({'user_username': _('Invalid administrator username.')})
 
         return attrs
 
@@ -218,7 +218,7 @@ class VirtualMachineImportSerializer(structure_serializers.BaseResourceImportSer
             vm = backend.get_vm(validated_data['backend_id'])
         except AzureBackendError:
             raise serializers.ValidationError(
-                {'backend_id': "Can't find Virtual Machine with ID %s" % validated_data['backend_id']})
+                {'backend_id': _("Can't find Virtual Machine with ID %s") % validated_data['backend_id']})
 
         validated_data['name'] = vm.name
         validated_data['created'] = timezone.now()

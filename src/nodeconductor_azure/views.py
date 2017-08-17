@@ -98,6 +98,4 @@ class VirtualMachineViewSet(six.with_metaclass(structure_views.ResourceViewMetac
             instance,
             backend_image_id=serializer.validated_data['image'].backend_id,
             backend_size_id=serializer.validated_data['size'].pk,
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password'],
         )

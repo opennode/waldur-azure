@@ -348,8 +348,7 @@ class AzureBackend(AzureBaseBackend):
             return False
 
     @log_backend_action()
-    def provision_vm(self, vm, backend_image_id=None, backend_size_id=None,
-                     username=None, password=None):
+    def provision_vm(self, vm, backend_image_id=None, backend_size_id=None):
         try:
             backend_vm = self.manager.create_node(
                 name=vm.name,
@@ -359,8 +358,8 @@ class AzureBackend(AzureBaseBackend):
                 ex_storage_service_name=self.get_storage_name(),
                 ex_deployment_slot=self.deployment,
                 ex_custom_data=vm.user_data,
-                ex_admin_user_id=username,
-                auth=NodeAuthPassword(password))
+                ex_admin_user_id=vm.user_username,
+                auth=NodeAuthPassword(vm.user_password))
         except LibcloudError as e:
             logger.exception('Failed to provision virtual machine %s', vm.name)
             six.reraise(AzureBackendError, e)
