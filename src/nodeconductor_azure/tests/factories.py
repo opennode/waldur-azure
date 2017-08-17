@@ -2,7 +2,6 @@ from django.urls import reverse
 from libcloud.compute.types import NodeState
 
 import factory
-from factory import fuzzy
 
 from nodeconductor.structure.tests import factories as structure_factories
 from nodeconductor.structure import models as structure_models
@@ -15,6 +14,7 @@ class AzureServiceSettingsFactory(structure_factories.ServiceSettingsFactory):
         model = structure_models.ServiceSettings
 
     type = 'Azure'
+    customer = factory.SubFactory(structure_factories.CustomerFactory)
 
 
 class AzureServiceFactory(factory.DjangoModelFactory):
@@ -65,9 +65,9 @@ class VirtualMachineFactory(factory.DjangoModelFactory):
 
     state = models.VirtualMachine.States.OK
     runtime_state = NodeState.RUNNING
-    cores = fuzzy.FuzzyInteger(1, 8, step=2)
-    ram = fuzzy.FuzzyInteger(1024, 10240, step=1024)
-    disk = fuzzy.FuzzyInteger(1024, 102400, step=1024)
+    cores = factory.fuzzy.FuzzyInteger(1, 8, step=2)
+    ram = factory.fuzzy.FuzzyInteger(1024, 10240, step=1024)
+    disk = factory.fuzzy.FuzzyInteger(1024, 102400, step=1024)
 
     @classmethod
     def get_url(cls, instance=None, action=None):
@@ -79,3 +79,14 @@ class VirtualMachineFactory(factory.DjangoModelFactory):
     @classmethod
     def get_list_url(cls):
         return 'http://testserver' + reverse('aws-virtualmachine-list')
+
+
+class InstanceEndpoint(factory.DjangoModelFactory):
+    class Meta(object):
+        model = models.InstanceEndpoint
+
+    name = factory.fuzzy.FuzzyChoice(choices=models.InstanceEndpoint.Name.CHOICES)
+    protocol = factory.fuzzy.FuzzyChoice(choices=models.InstanceEndpoint.Protocol.CHOICES)
+    local_port = factory.fuzzy.FuzzyInteger(1000, 65535)
+    public_port = factory.fuzzy.FuzzyInteger(1000, 65535)
+    instance = factory.SubFactory(VirtualMachineFactory)

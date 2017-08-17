@@ -18,6 +18,11 @@ class ErrorMessageParsingTest(unittest.TestCase):
     def test_azure_response_parses_error_message(self):
         self._mock_response.status = httplib.NOT_FOUND
         self._mock_response.read.return_value = '<Error xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Code>ResourceNotFound</Code><Message>The resource service name hostedservices is not supported.</Message></Error>'
+
+        # response object has been updated in 2.1
+        self._mock_response.status_code = self._mock_response.status
+        self._mock_response.headers = []
+        self._mock_response.text = self._mock_response.read.return_value
         response = AzureResponse(response=self._mock_response,
                                  connection=self._mock_connection)
         try:
