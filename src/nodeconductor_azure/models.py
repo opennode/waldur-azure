@@ -100,6 +100,8 @@ class VirtualMachine(structure_models.VirtualMachine):
         AzureServiceProjectLink, related_name='virtualmachines', on_delete=models.PROTECT)
     public_ips = JSONField(default=[], help_text=_('List of public IP addresses'), blank=True)
     private_ips = JSONField(default=[], help_text=_('List of private IP addresses'), blank=True)
+    user_username = models.CharField(max_length=50)
+    user_password = models.CharField(max_length=50)
 
     @classmethod
     def get_url_name(cls):
