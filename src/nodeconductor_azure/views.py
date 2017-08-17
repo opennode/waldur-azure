@@ -46,14 +46,16 @@ class VirtualMachineViewSet(six.with_metaclass(structure_views.ResourceViewMetac
     def rdp(self, request, uuid=None):
         vm = self.get_object()
 
-        if not vm.remote_desktop_port:
+        try:
+            rdp_endpoint = vm.endpoints.get(name=models.InstanceEndpoint.Name.RDP)
+        except models.InstanceEndpoint.DoesNotExist:
             raise exceptions.NotFound("This virtual machine doesn't run remote desktop")
 
         response = HttpResponse(content_type='application/x-rdp')
         response['Content-Disposition'] = 'attachment; filename="{}.rdp"'.format(vm.name)
         response.write(
             "full address:s:%s.cloudapp.net:%s\n"
-            "prompt for credentials:i:1\n\n" % (vm.service_project_link.cloud_service_name, vm.remote_desktop_port))
+            "prompt for credentials:i:1\n\n" % (vm.service_project_link.cloud_service_name, rdp_endpoint.public_port))
 
         return response
 

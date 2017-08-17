@@ -9,3 +9,4 @@ def copy_cloud_service_name_on_service_creation(sender, instance, created=False,
 
     cloud_service_name = service_project_link.service.settings.options['cloud_service_name']
     instance.cloud_service_name = cloud_service_name
+    instance.save()

@@ -106,7 +106,19 @@ class ServiceProjectLinkSerializer(structure_serializers.BaseServiceProjectLinkS
         }
 
 
+class InstanceEndpointsSerializer(serializers.ModelSerializer):
+    local_port = serializers.ReadOnlyField()
+    public_port = serializers.ReadOnlyField()
+    protocol = serializers.ReadOnlyField()
+    name = serializers.ReadOnlyField()
+
+    class Meta(object):
+        model = models.InstanceEndpoint
+        fields = ('local_port', 'public_port', 'protocol', 'name')
+
+
 class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
+    endpoints = InstanceEndpointsSerializer(many=True, read_only=True)
 
     service = serializers.HyperlinkedRelatedField(
         source='service_project_link.service',
@@ -146,14 +158,14 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
         view_name = 'azure-virtualmachine-detail'
         fields = structure_serializers.BaseResourceSerializer.Meta.fields + (
             'image', 'size', 'username', 'password', 'user_data', 'rdp', 'external_ips', 'internal_ips',
-            'runtime_state', 'start_time', 'cores', 'ram', 'disk', 'image_name', 'remote_desktop_port'
+            'runtime_state', 'start_time', 'cores', 'ram', 'disk', 'image_name', 'endpoints',
         )
         protected_fields = structure_serializers.BaseResourceSerializer.Meta.protected_fields + (
             'image', 'size', 'username', 'password', 'user_data'
         )
         read_only_fields = structure_serializers.BaseResourceSerializer.Meta.read_only_fields + (
             'external_ips', 'internal_ips', 'runtime_state', 'start_time', 'cores', 'ram', 'disk',
-            'image_name', 'remote_desktop_port'
+            'image_name'
         )
 
     def validate(self, attrs):

@@ -16,8 +16,7 @@ class VirtualMachineRDPTest(test.APITransactionTestCase):
     def test_rdp_returns_xrdp_file_as_attachment(self):
         self.client.force_authenticate(self.fixture.owner)
         vm = self.fixture.virtual_machine
-        vm.remote_desktop_port = 3389
-        vm.save()
+        factories.InstanceEndpoint(instance=vm, name=models.InstanceEndpoint.Name.RDP)
         url = factories.VirtualMachineFactory.get_url(vm, 'rdp')
 
         response = self.client.get(url)
