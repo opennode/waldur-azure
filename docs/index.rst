@@ -30,7 +30,7 @@ Endpoints
 License
 -------
 
-NodeConductor Azure plugin is open-source under Apache v2 license.
+NodeConductor Azure plugin is open-source under MIT license.
 
 
 Indices and tables

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 from setuptools import setup, find_packages
 
 
@@ -8,21 +7,22 @@ dev_requires = [
 ]
 
 install_requires = [
-    'nodeconductor>0.102.2',
-    'apache-libcloud>=0.20.0',
+    'nodeconductor>0.139.0',
+    'apache-libcloud>=1.1.0,<2.2.0',
     'cryptography',
 ]
 
 setup(
     name='nodeconductor-azure',
-    version='0.2.0',
+    version='0.3.0',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
-    url='http://nodeconductor.com',
-    description='NodeConductor plugin for managing MS Azure resources.',
+    url='https://waldur.com',
+    description='Waldur plugin for managing MS Azure resources.',
     long_description=open('README.rst').read(),
+    license='MIT',
     package_dir={'': 'src'},
-    packages=find_packages('src', exclude=['*.tests', '*.tests.*', 'tests.*', 'tests']),
+    packages=find_packages('src'),
     install_requires=install_requires,
     zip_safe=False,
     extras_require={
@@ -39,6 +39,6 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Operating System :: OS Independent',
-        'License :: OSI Approved :: Apache Software License',
+        'License :: OSI Approved :: MIT License',
     ],
 )

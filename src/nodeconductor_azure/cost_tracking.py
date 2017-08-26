@@ -1,31 +1,25 @@
-from django.contrib.contenttypes.models import ContentType
+from nodeconductor.cost_tracking import CostTrackingStrategy, ConsumableItem, CostTrackingRegister
 
-from nodeconductor.cost_tracking import CostTrackingBackend
-from nodeconductor.cost_tracking.models import DefaultPriceListItem
-
-from .backend import SizeQueryset
-from . import models
+from . import models, backend
 
 
-class AzureCostTrackingBackend(CostTrackingBackend):
+class AzureCostTrackingStrategy(CostTrackingStrategy):
+    resource_class = models.VirtualMachine
 
-    @classmethod
-    def get_default_price_list_items(cls):
-        ct = ContentType.objects.get_for_model(models.VirtualMachine)
-        for size in SizeQueryset():
-            yield DefaultPriceListItem(
-                resource_content_type=ct,
-                item_type=CostTrackingBackend.VM_SIZE_ITEM_TYPE,
-                key=size.pk,
-                value=size.price,
-                metadata={
-                    'name': size.name,
-                    'disk': size.disk,
-                    'ram': size.ram,
-                    'cores': size.cores,
-                })
+    class Types(object):
+        FLAVOR = 'flavor'
 
     @classmethod
-    def get_monthly_cost_estimate(cls, resource):
-        backend = resource.get_backend()
-        return backend.get_monthly_cost_estimate(resource)
+    def get_consumable_items(cls):
+        return [ConsumableItem(item_type=cls.Types.FLAVOR, key=size.name, default_price=size.price)
+                for size in backend.SizeQueryset()]
+
+    @classmethod
+    def get_configuration(cls, virtual_machine):
+        consumables = {}
+        if virtual_machine.state != models.VirtualMachine.States.ERRED and virtual_machine.image_name:
+            consumables[ConsumableItem(item_type=cls.Types.FLAVOR, key=virtual_machine.image_name)] = 1
+        return consumables
+
+
+CostTrackingRegister.register_strategy(AzureCostTrackingStrategy)

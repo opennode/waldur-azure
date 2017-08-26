@@ -1,15 +1,18 @@
-Name: nodeconductor-azure
-Summary: NodeConductor plugin for managing MS Azure resources.
+Name: waldur-azure
+Summary: Waldur plugin for managing MS Azure resources.
 Group: Development/Libraries
-Version: 0.2.0
+Version: 0.3.0
 Release: 1.el7
-License: Copyright 2016 OpenNode LLC.  All rights reserved.
-Url: http://nodeconductor.com
+License: MIT
+Url: https://waldur.com
 Source0: %{name}-%{version}.tar.gz
 
-Requires: nodeconductor > 0.102.2
-Requires: python-libcloud >= 0.20.1
+Requires: waldur-core > 0.139.0
+Requires: python-libcloud >= 1.1.0
+Requires: python-libcloud < 2.2.0
 Requires: python-cryptography
+
+Obsoletes: nodeconductor-azure
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -36,6 +39,9 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 
 %changelog
+* Sat Aug 26 2017 Jenkins <jenkins@opennodecloud.com> - 0.3.0-1.el7
+- New upstream release
+
 * Thu Jun 30 2016 Jenkins <jenkins@opennodecloud.com> - 0.2.0-1.el7
 - New upstream release
 

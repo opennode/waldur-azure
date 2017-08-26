@@ -1,9 +1,12 @@
 from django.http import HttpResponse
-from rest_framework import decorators, exceptions, viewsets
+from django.utils import six
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import decorators, exceptions, viewsets, response, status, serializers as rf_serializers
 
+from nodeconductor.core import validators as core_validators
 from nodeconductor.structure import ServiceBackendError, views as structure_views
 
-from . import models, serializers
+from . import models, serializers, executors, filters
 from .backend import SizeQueryset
 
 
@@ -21,6 +24,7 @@ class AzureServiceProjectLinkViewSet(structure_views.BaseServiceProjectLinkViewS
 class ImageViewSet(structure_views.BaseServicePropertyViewSet):
     queryset = models.Image.objects.all()
     serializer_class = serializers.ImageSerializer
+    filter_class = filters.ImageFilter
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -33,40 +37,65 @@ class SizeViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'uuid'
 
 
-class VirtualMachineViewSet(structure_views.BaseResourceViewSet):
+class VirtualMachineViewSet(six.with_metaclass(structure_views.ResourceViewMetaclass, structure_views.ResourceViewSet)):
     queryset = models.VirtualMachine.objects.all()
     serializer_class = serializers.VirtualMachineSerializer
+    delete_executor = executors.VirtualMachineDeleteExecutor
 
     @decorators.detail_route()
     def rdp(self, request, uuid=None):
         vm = self.get_object()
-        if vm.state != vm.States.ONLINE:
-            raise exceptions.NotAcceptable("Can't launch remote desktop for offline virtual machine")
 
         try:
-            backend = vm.get_backend()
-            backend_vm = backend.get_vm(vm.backend_id)
-            rdp_port = backend_vm.extra['remote_desktop_port']
-        except ServiceBackendError as e:
-            raise exceptions.APIException(e)
-
-        if not rdp_port:
+            rdp_endpoint = vm.endpoints.get(name=models.InstanceEndpoint.Name.RDP)
+        except models.InstanceEndpoint.DoesNotExist:
             raise exceptions.NotFound("This virtual machine doesn't run remote desktop")
 
         response = HttpResponse(content_type='application/x-rdp')
-        response['Content-Disposition'] = 'attachment; filename="{}.rdp"'.format(backend_vm.name)
+        response['Content-Disposition'] = 'attachment; filename="{}.rdp"'.format(vm.name)
         response.write(
             "full address:s:%s.cloudapp.net:%s\n"
-            "prompt for credentials:i:1\n\n" % (vm.service_project_link.cloud_service_name, rdp_port))
+            "prompt for credentials:i:1\n\n" % (vm.service_project_link.cloud_service_name, rdp_endpoint.public_port))
 
         return response
 
-    def perform_provision(self, serializer):
-        resource = serializer.save()
-        backend = resource.get_backend()
-        backend.provision(
-            resource,
-            image=serializer.validated_data['image'],
-            size=serializer.validated_data['size'],
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password'])
+    rdp_validators = [core_validators.StateValidator(models.VirtualMachine.States.OK),
+                      core_validators.RuntimeStateValidator('running')]
+
+    @decorators.detail_route(methods=['post'])
+    def start(self, request, uuid=None):
+        virtual_machine = self.get_object()
+        executors.VirtualMachineStartExecutor().execute(virtual_machine)
+        return response.Response({'status': _('start was scheduled')}, status=status.HTTP_202_ACCEPTED)
+
+    start_validators = [core_validators.StateValidator(models.VirtualMachine.States.OK),
+                        core_validators.RuntimeStateValidator('stopped')]
+    start_serializer_class = rf_serializers.Serializer
+
+    @decorators.detail_route(methods=['post'])
+    def stop(self, request, uuid=None):
+        virtual_machine = self.get_object()
+        executors.VirtualMachineStopExecutor().execute(virtual_machine)
+        return response.Response({'status': _('stop was scheduled')}, status=status.HTTP_202_ACCEPTED)
+
+    stop_validators = [core_validators.StateValidator(models.VirtualMachine.States.OK),
+                       core_validators.RuntimeStateValidator('running')]
+    stop_serializer_class = rf_serializers.Serializer
+
+    @decorators.detail_route(methods=['post'])
+    def restart(self, request, uuid=None):
+        virtual_machine = self.get_object()
+        executors.VirtualMachineRestartExecutor().execute(virtual_machine)
+        return response.Response({'status': _('restart was scheduled')}, status=status.HTTP_202_ACCEPTED)
+
+    restart_validators = [core_validators.StateValidator(models.VirtualMachine.States.OK),
+                          core_validators.RuntimeStateValidator('running')]
+    restart_serializer_class = rf_serializers.Serializer
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        executors.VirtualMachineCreateExecutor.execute(
+            instance,
+            backend_image_id=serializer.validated_data['image'].backend_id,
+            backend_size_id=serializer.validated_data['size'].pk,
+        )
