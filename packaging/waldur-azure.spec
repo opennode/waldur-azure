@@ -1,7 +1,7 @@
 Name: waldur-azure
 Summary: Waldur plugin for managing MS Azure resources.
 Group: Development/Libraries
-Version: 0.2.0
+Version: 0.3.0
 Release: 1.el7
 License: MIT
 Url: https://waldur.com
@@ -39,6 +39,9 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 
 %changelog
+* Sat Aug 26 2017 Jenkins <jenkins@opennodecloud.com> - 0.3.0-1.el7
+- New upstream release
+
 * Thu Jun 30 2016 Jenkins <jenkins@opennodecloud.com> - 0.2.0-1.el7
 - New upstream release
 
