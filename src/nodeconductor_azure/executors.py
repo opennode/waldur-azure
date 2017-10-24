@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 from celery import chain
 
 from nodeconductor.core import executors as core_executors, tasks as core_tasks
+from nodeconductor.structure import executors as structure_executors
 
-from . import tasks
+from . import models, tasks
 
 
 class VirtualMachineStartExecutor(core_executors.ActionExecutor):
@@ -97,3 +98,9 @@ class VirtualMachineDeleteExecutor(core_executors.DeleteExecutor):
             )
         else:
             return core_tasks.StateTransitionTask().si(serialized_instance, state_transition='begin_deleting')
+
+
+class AzureCleanupExecutor(structure_executors.BaseCleanupExecutor):
+    executors = (
+        (models.VirtualMachine, VirtualMachineDeleteExecutor),
+    )

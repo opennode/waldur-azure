@@ -7,7 +7,7 @@ License: MIT
 Url: https://waldur.com
 Source0: %{name}-%{version}.tar.gz
 
-Requires: waldur-core > 0.139.0
+Requires: waldur-core > 0.148.3
 Requires: python-libcloud >= 1.1.0
 Requires: python-libcloud < 2.2.0
 Requires: python-cryptography
