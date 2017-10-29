@@ -7,14 +7,14 @@ dev_requires = [
 ]
 
 install_requires = [
-    'nodeconductor>0.139.0',
+    'nodeconductor>0.148.3',
     'apache-libcloud>=1.1.0,<2.2.0',
     'cryptography',
 ]
 
 setup(
     name='nodeconductor-azure',
-    version='0.3.1',
+    version='0.3.2',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
     url='https://waldur.com',

@@ -1,13 +1,13 @@
 Name: waldur-azure
 Summary: Waldur plugin for managing MS Azure resources.
 Group: Development/Libraries
-Version: 0.3.1
+Version: 0.3.2
 Release: 1.el7
 License: MIT
 Url: https://waldur.com
 Source0: %{name}-%{version}.tar.gz
 
-Requires: waldur-core > 0.139.0
+Requires: waldur-core > 0.148.3
 Requires: python-libcloud >= 1.1.0
 Requires: python-libcloud < 2.2.0
 Requires: python-cryptography
@@ -39,6 +39,9 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 
 %changelog
+* Sun Oct 29 2017 Jenkins <jenkins@opennodecloud.com> - 0.3.2-1.el7
+- New upstream release
+
 * Mon Aug 28 2017 Jenkins <jenkins@opennodecloud.com> - 0.3.1-1.el7
 - New upstream release
 
