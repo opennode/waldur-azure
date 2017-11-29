@@ -13,7 +13,7 @@ install_requires = [
 ]
 
 setup(
-    name='nodeconductor-azure',
+    name='waldur-azure',
     version='0.3.2',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
@@ -30,7 +30,7 @@ setup(
     },
     entry_points={
         'nodeconductor_extensions': (
-            'nodeconductor_azure = nodeconductor_azure.extension:AzureExtension',
+            'waldur_azure = waldur_azure.extension:AzureExtension',
         ),
     },
     include_package_data=True,

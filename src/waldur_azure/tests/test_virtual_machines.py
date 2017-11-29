@@ -64,7 +64,7 @@ class VirtualMachineStartTest(test.APITransactionTestCase):
         self.fixture = fixtures.AzureFixture()
         self.client.force_authenticate(self.fixture.owner)
 
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStartExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStartExecutor.execute')
     def test_stopped_machine_can_be_started(self, start_executor_mock):
         vm = self.fixture.virtual_machine
         vm.runtime_state = NodeState.STOPPED
@@ -75,7 +75,7 @@ class VirtualMachineStartTest(test.APITransactionTestCase):
 
         self.assertEquals(response.status_code, status.HTTP_202_ACCEPTED)
 
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStartExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStartExecutor.execute')
     def test_machine_in_ok_state_can_be_started(self, start_executor_mock):
         vm = self.fixture.virtual_machine
         vm.state = vm.States.OK
@@ -88,7 +88,7 @@ class VirtualMachineStartTest(test.APITransactionTestCase):
         self.assertEquals(response.status_code, status.HTTP_202_ACCEPTED)
 
     @data(NodeState.RUNNING, NodeState.UNKNOWN, NodeState.ERROR, NodeState.STARTING)
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStartExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStartExecutor.execute')
     def test_only_stopped_machine_can_be_started(self, runtime_state, start_executor_mock):
         vm = self.fixture.virtual_machine
         vm.runtime_state = runtime_state
@@ -101,7 +101,7 @@ class VirtualMachineStartTest(test.APITransactionTestCase):
 
     @data(models.VirtualMachine.States.DELETING, models.VirtualMachine.States.UPDATING,
           models.VirtualMachine.States.DELETION_SCHEDULED, models.VirtualMachine.States.ERRED)
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStartExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStartExecutor.execute')
     def test_only_machine_in_ok_state_can_be_started(self, state, start_executor_mock):
         vm = self.fixture.virtual_machine
         vm.state = state
@@ -120,7 +120,7 @@ class VirtualMachineStopTest(test.APITransactionTestCase):
         self.fixture = fixtures.AzureFixture()
         self.client.force_authenticate(self.fixture.owner)
 
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStopExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStopExecutor.execute')
     def test_running_machine_can_be_stopped(self, stop_executor_mock):
         vm = self.fixture.virtual_machine
         vm.runtime_state = NodeState.RUNNING
@@ -131,7 +131,7 @@ class VirtualMachineStopTest(test.APITransactionTestCase):
 
         self.assertEquals(response.status_code, status.HTTP_202_ACCEPTED)
 
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStopExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStopExecutor.execute')
     def test_machine_in_ok_state_can_be_stopped(self, stop_executor_mock):
         vm = self.fixture.virtual_machine
         vm.state = vm.States.OK
@@ -143,7 +143,7 @@ class VirtualMachineStopTest(test.APITransactionTestCase):
         self.assertEquals(response.status_code, status.HTTP_202_ACCEPTED)
 
     @data(NodeState.STOPPED, NodeState.UNKNOWN, NodeState.ERROR, NodeState.STARTING)
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStopExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStopExecutor.execute')
     def test_only_running_machine_can_be_stopped(self, runtime_state, stop_executor_mock):
         vm = self.fixture.virtual_machine
         vm.runtime_state = runtime_state
@@ -156,7 +156,7 @@ class VirtualMachineStopTest(test.APITransactionTestCase):
 
     @data(models.VirtualMachine.States.DELETING, models.VirtualMachine.States.UPDATING,
           models.VirtualMachine.States.DELETION_SCHEDULED, models.VirtualMachine.States.ERRED)
-    @mock.patch('nodeconductor_azure.executors.VirtualMachineStopExecutor.execute')
+    @mock.patch('waldur_azure.executors.VirtualMachineStopExecutor.execute')
     def test_only_machine_in_ok_state_can_be_stopped(self, state, stop_executor_mock):
         vm = self.fixture.virtual_machine
         vm.state = state

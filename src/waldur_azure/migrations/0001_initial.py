@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cloud_service_name', models.CharField(blank=True, max_length=255)),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='structure.Project')),
-                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='nodeconductor_azure.AzureService')),
+                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='waldur_azure.AzureService')),
             ],
             options={
                 'abstract': False,
@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
                 ('private_ips', nodeconductor.core.fields.JSONField(blank=True, default=[], help_text='List of private IP addresses')),
                 ('user_username', models.CharField(max_length=50)),
                 ('user_password', models.CharField(max_length=50)),
-                ('service_project_link', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='virtualmachines', to='nodeconductor_azure.AzureServiceProjectLink')),
+                ('service_project_link', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='virtualmachines', to='waldur_azure.AzureServiceProjectLink')),
                 ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
             ],
             options={
@@ -115,12 +115,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='instanceendpoint',
             name='instance',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='endpoints', to='nodeconductor_azure.VirtualMachine'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='endpoints', to='waldur_azure.VirtualMachine'),
         ),
         migrations.AddField(
             model_name='azureservice',
             name='projects',
-            field=models.ManyToManyField(related_name='azure_services', through='nodeconductor_azure.AzureServiceProjectLink', to='structure.Project'),
+            field=models.ManyToManyField(related_name='azure_services', through='waldur_azure.AzureServiceProjectLink', to='structure.Project'),
         ),
         migrations.AddField(
             model_name='azureservice',

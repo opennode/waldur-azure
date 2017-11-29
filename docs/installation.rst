@@ -3,16 +3,16 @@ Installation
 
 * `Install NodeConductor <http://nodeconductor.readthedocs.org/en/latest/guide/intro.html#installation-from-source>`_
 
-* Clone NodeConductor Azure repository
+* Clone Waldur Azure repository
 
   .. code-block:: bash
 
-    git clone https://github.com/opennode/nodeconductor-azure.git
+    git clone https://github.com/opennode/waldur-azure.git
 
-* Install NodeConductor Azure into NodeConductor virtual environment
+* Install Waldur Azure into NodeConductor virtual environment
 
   .. code-block:: bash
 
-    cd /path/to/nodeconductor-azure/
+    cd /path/to/waldur-azure/
     python setup.py install
 

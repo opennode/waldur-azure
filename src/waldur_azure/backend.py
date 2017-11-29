@@ -157,7 +157,7 @@ class AzureBaseBackend(ServiceBackend):
 
 
 class AzureBackend(AzureBaseBackend):
-    """ NodeConductor interface to Azure API.
+    """ Waldur interface to Azure API.
         http://libcloud.readthedocs.org/en/latest/compute/drivers/azure.html
     """
 
