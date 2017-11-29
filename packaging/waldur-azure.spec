@@ -20,7 +20,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: python-setuptools
 
 %description
-NodeConductor plugin for managing MS Azure resources.
+Waldur plugin for managing MS Azure resources.
 
 %prep
 %setup -q -n %{name}-%{version}
