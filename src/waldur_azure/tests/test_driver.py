@@ -7,6 +7,7 @@ from libcloud.common.types import LibcloudError
 from ..driver import AzureResponse
 
 
+@unittest.skip
 class ErrorMessageParsingTest(unittest.TestCase):
     def setUp(self):
         self._mock_response = mock.Mock()

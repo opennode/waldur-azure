@@ -5,7 +5,7 @@ class AzureExtension(NodeConductorExtension):
 
     @staticmethod
     def django_app():
-        return 'nodeconductor_azure'
+        return 'waldur_azure'
 
     @staticmethod
     def rest_urls():

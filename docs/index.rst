@@ -1,4 +1,4 @@
-Welcome to NodeConductor Azure plugin's documentation!
+Welcome to Waldur Azure plugin's documentation!
 ================================================================
 
 NodeConductor plugin for managing MS Azure resources.
@@ -30,7 +30,7 @@ Endpoints
 License
 -------
 
-NodeConductor Azure plugin is open-source under MIT license.
+Waldur Azure plugin is open-source under MIT license.
 
 
 Indices and tables
