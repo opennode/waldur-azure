@@ -7,7 +7,7 @@ dev_requires = [
 ]
 
 install_requires = [
-    'nodeconductor>0.148.3',
+    'waldur_core>0.148.3',
     'apache-libcloud>=1.1.0,<2.2.0',
     'cryptography',
 ]
@@ -29,7 +29,7 @@ setup(
         'dev': dev_requires,
     },
     entry_points={
-        'nodeconductor_extensions': (
+        'waldur_extensions': (
             'waldur_azure = waldur_azure.extension:AzureExtension',
         ),
     },

@@ -1,7 +1,7 @@
-from nodeconductor.core import NodeConductorExtension
+from waldur_core.core import WaldurExtension
 
 
-class AzureExtension(NodeConductorExtension):
+class AzureExtension(WaldurExtension):
 
     @staticmethod
     def django_app():
