@@ -9,7 +9,7 @@ Installation
 
     git clone https://github.com/opennode/waldur-azure.git
 
-* Install Waldur Azure into NodeConductor virtual environment
+* Install Waldur Azure into Waldur virtual environment
 
   .. code-block:: bash
 
