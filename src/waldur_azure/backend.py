@@ -14,7 +14,7 @@ from libcloud.compute.base import NodeAuthPassword
 from libcloud.compute.drivers import azure
 from libcloud.compute.types import NodeState
 
-from nodeconductor.structure import ServiceBackend, ServiceBackendError, ServiceBackendNotImplemented, \
+from waldur_core.structure import ServiceBackend, ServiceBackendError, ServiceBackendNotImplemented, \
     log_backend_action
 
 from . import models

@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
-from nodeconductor.structure import admin as structure_admin
+from waldur_core.structure import admin as structure_admin
 from .models import AzureService, AzureServiceProjectLink, VirtualMachine
 
 

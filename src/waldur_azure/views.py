@@ -3,8 +3,8 @@ from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import decorators, exceptions, viewsets, response, status, serializers as rf_serializers
 
-from nodeconductor.core import validators as core_validators
-from nodeconductor.structure import ServiceBackendError, views as structure_views
+from waldur_core.core import validators as core_validators
+from waldur_core.structure import ServiceBackendError, views as structure_views
 
 from . import models, serializers, executors, filters
 from .backend import SizeQueryset
