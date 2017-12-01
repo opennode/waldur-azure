@@ -1,7 +1,7 @@
 Welcome to Waldur Azure plugin's documentation!
-================================================================
+===============================================
 
-NodeConductor plugin for managing MS Azure resources.
+Waldur plugin for managing MS Azure resources.
 
 Guide
 -----

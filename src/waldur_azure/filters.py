@@ -1,4 +1,4 @@
-from nodeconductor.structure import filters as structure_filters
+from waldur_core.structure import filters as structure_filters
 
 from . import models
 

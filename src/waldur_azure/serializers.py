@@ -8,8 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from nodeconductor.core import serializers as core_serializers
-from nodeconductor.structure import serializers as structure_serializers
+from waldur_core.core import serializers as core_serializers
+from waldur_core.structure import serializers as structure_serializers
 
 from . import models
 from .backend import AzureBackendError, SizeQueryset

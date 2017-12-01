@@ -4,11 +4,11 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from nodeconductor.core import models as core_models
-from nodeconductor.core.fields import JSONField
-from nodeconductor.quotas.fields import CounterQuotaField
-from nodeconductor.quotas.models import QuotaModelMixin
-from nodeconductor.structure import models as structure_models
+from waldur_core.core import models as core_models
+from waldur_core.core.fields import JSONField
+from waldur_core.quotas.fields import CounterQuotaField
+from waldur_core.quotas.models import QuotaModelMixin
+from waldur_core.structure import models as structure_models
 
 
 class AzureService(structure_models.Service):
