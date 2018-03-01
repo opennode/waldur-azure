@@ -7,7 +7,7 @@ dev_requires = [
 ]
 
 install_requires = [
-    'waldur-core>=0.151.0',
+    'waldur-core>=0.156.2',
     'apache-libcloud>=1.1.0,<2.2.0',
     'cryptography',
 ]
