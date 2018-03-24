@@ -5,7 +5,7 @@ from celery import chain
 from waldur_core.core import executors as core_executors, tasks as core_tasks
 from waldur_core.structure import executors as structure_executors
 
-from . import models, tasks
+from . import models
 
 
 class VirtualMachineStartExecutor(core_executors.ActionExecutor):
@@ -17,7 +17,7 @@ class VirtualMachineStartExecutor(core_executors.ActionExecutor):
             core_tasks.BackendMethodTask().si(
                 serialized_instance, backend_method='start_vm', state_transition='begin_updating',
             ),
-            tasks.PollRuntimeStateTask().si(
+            core_tasks.PollRuntimeStateTask().si(
                 serialized_instance,
                 backend_pull_method='pull_virtual_machine_runtime_state',
                 success_state='running',
@@ -35,7 +35,7 @@ class VirtualMachineStopExecutor(core_executors.ActionExecutor):
             core_tasks.BackendMethodTask().si(
                 serialized_instance, backend_method='stop_vm', state_transition='begin_updating',
             ),
-            tasks.PollRuntimeStateTask().si(
+            core_tasks.PollRuntimeStateTask().si(
                 serialized_instance,
                 backend_pull_method='pull_virtual_machine_runtime_state',
                 success_state='stopped',
@@ -53,7 +53,7 @@ class VirtualMachineRestartExecutor(core_executors.ActionExecutor):
             core_tasks.BackendMethodTask().si(
                 serialized_instance, backend_method='reboot_vm', state_transition='begin_updating',
             ),
-            tasks.PollRuntimeStateTask().si(
+            core_tasks.PollRuntimeStateTask().si(
                 serialized_instance,
                 backend_pull_method='pull_virtual_machine_runtime_state',
                 success_state='running',
@@ -73,7 +73,7 @@ class VirtualMachineCreateExecutor(core_executors.CreateExecutor):
                 state_transition='begin_creating',
                 **kwargs
             ),
-            tasks.PollRuntimeStateTask().si(
+            core_tasks.PollRuntimeStateTask().si(
                 serialized_instance,
                 backend_pull_method='pull_virtual_machine_runtime_state',
                 success_state='running',
@@ -94,7 +94,7 @@ class VirtualMachineDeleteExecutor(core_executors.DeleteExecutor):
             return chain(
                 core_tasks.BackendMethodTask().si(
                     serialized_instance, backend_method='destroy_vm', state_transition='begin_deleting'),
-                tasks.PollCheckTask().si(serialized_instance, 'is_vm_deleted'),
+                core_tasks.PollBackendCheckTask().si(serialized_instance, 'is_vm_deleted'),
             )
         else:
             return core_tasks.StateTransitionTask().si(serialized_instance, state_transition='begin_deleting')
