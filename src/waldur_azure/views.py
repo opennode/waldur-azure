@@ -1,5 +1,4 @@
 from django.http import HttpResponse
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import decorators, exceptions, viewsets, response, status, serializers as rf_serializers
 
@@ -37,7 +36,7 @@ class SizeViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'uuid'
 
 
-class VirtualMachineViewSet(six.with_metaclass(structure_views.ResourceViewMetaclass, structure_views.ResourceViewSet)):
+class VirtualMachineViewSet(structure_views.BaseResourceViewSet):
     queryset = models.VirtualMachine.objects.all()
     serializer_class = serializers.VirtualMachineSerializer
     delete_executor = executors.VirtualMachineDeleteExecutor
