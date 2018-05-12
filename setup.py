@@ -14,7 +14,7 @@ install_requires = [
 
 setup(
     name='waldur-azure',
-    version='0.3.5',
+    version='0.4.0',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
     url='https://waldur.com',
