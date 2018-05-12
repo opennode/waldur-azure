@@ -7,14 +7,14 @@ dev_requires = [
 ]
 
 install_requires = [
-    'waldur-core>=0.156.2',
+    'waldur-core>=0.157.5',
     'apache-libcloud>=1.1.0,<2.2.0',
     'cryptography',
 ]
 
 setup(
     name='waldur-azure',
-    version='0.3.5',
+    version='0.4.0',
     author='OpenNode Team',
     author_email='info@opennodecloud.com',
     url='https://waldur.com',

@@ -30,6 +30,7 @@ def parse_error(body):
     error_msg = '%s: %s' % (code, message)
     return error_msg
 
+
 """
 actual VM configs are not supported:
 https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/
@@ -245,6 +246,7 @@ class AzureResponse(_AzureResponse):
     """
     Fix error parsing for Azure
     """
+
     def parse_error(self, msg=None):
         error_msg = 'Unknown error'
 
@@ -285,7 +287,7 @@ class AzureNodeDriver(_AzureNodeDriver):
                 body = ET.XML(error_msg)
                 if ET.iselement(body):
                     error_msg = parse_error(body)
-            except:
+            except ET.ParseError:
                 pass
 
             values = (response.error, error_msg, response.status)
