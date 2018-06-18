@@ -129,7 +129,10 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
 
     service_project_link = serializers.HyperlinkedRelatedField(
         view_name='azure-spl-detail',
-        queryset=models.AzureServiceProjectLink.objects.all())
+        queryset=models.AzureServiceProjectLink.objects.all(),
+        allow_null=True,
+        required=False,
+    )
 
     image = serializers.HyperlinkedRelatedField(
         view_name='azure-image-detail',
@@ -169,6 +172,8 @@ class VirtualMachineSerializer(structure_serializers.BaseResourceSerializer):
         )
 
     def validate(self, attrs):
+        attrs = super(VirtualMachineSerializer, self).validate(attrs)
+
         if not re.match(r'[a-zA-Z][a-zA-Z0-9-]{0,13}[a-zA-Z0-9]$', attrs['name']):
             raise serializers.ValidationError(
                 {'name': _("The name can contain only letters, numbers, and hyphens. "
