@@ -15,5 +15,5 @@ deploy:
     secure: cyG2KEe874zocDCI11sPDSdoRPHCqeDPe12CmqRrnFPv00UB2JAG+bY/Aa3t4O6THThvbz3iuk3LJgw5PRbs7ALGUI21GtFRNTNepUk5rLQwBg0XNvJvGAPoyF+oiczFx7iJlbhTEViSP4bKGj1rkWrEL2pFziNEFOeDi0oDNadj40kBzKIWgbx2Wb3uljxd9+jfNpcLJohY6vTPnKpD8JIpReBjSNdIQocIkNAscP+xAvD8b5N4WvxoGm69wH7pCrniJS+je61wAg+8r6F/Abl6WmB5GnFHYfA64M48IBm0R35rO8BkU6MP2vx5pPXp3oZ0WYWPFWQS0edBhDS+s9WLoX+m+XhIbsaaAHoanQVX+Y+o7c5kn0+6lOTIZf26oROD/1HLWvJa0fQiImxL2w1fSmx2r1B61Utf1KkM3IWEYErmUzLZs2OLoo/uGnJftEnipH+haDu7tID5L4iObWWjH1MYcSy7HzXH8IuPAbkDWQol7N215LJWkgmM4EbwlU1NptKlCVzL8e0WvyGdVBEwYQwUb6PQZ97+0lTJUklUBZrYDMwX+TtuzAvHi9rnp6rtWbvt1/zRYVy5LJ9hk8kvNGPLvkxeGxYOMJkY1/7H6PgW6rRv5wIqNkOdD8nXrewO5BALIVVQKWBf6RUHuw9unM6+lmOWinYRDTVpTwo=
   on:
     tags: true
-    distributions: sdist bdist_wheel
     repo: opennode/waldur-azure
+  distributions: "sdist bdist_wheel"
