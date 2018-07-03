@@ -98,8 +98,8 @@ class InstanceEndpoint(core_models.BackendModelMixin, models.Model):
 class VirtualMachine(structure_models.VirtualMachine):
     service_project_link = models.ForeignKey(
         AzureServiceProjectLink, related_name='virtualmachines', on_delete=models.PROTECT)
-    public_ips = JSONField(default=[], help_text=_('List of public IP addresses'), blank=True)
-    private_ips = JSONField(default=[], help_text=_('List of private IP addresses'), blank=True)
+    public_ips = JSONField(default=list, help_text=_('List of public IP addresses'), blank=True)
+    private_ips = JSONField(default=list, help_text=_('List of private IP addresses'), blank=True)
     user_username = models.CharField(max_length=50)
     user_password = models.CharField(max_length=50)
 
